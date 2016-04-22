@@ -904,8 +904,9 @@ class BaseFolder(object):
             deletelist = filter(lambda uid: dstfolder.uidexists(uid), deletelist)
             if len(deletelist):
                 self.ui.deletingmessages(deletelist, [dstfolder])
+                return # Don't delete anything whatever local or remote.
                 if self.repository.account.dryrun:
-                    return #don't delete messages in dry-run mode
+                    return # Don't delete messages in dry-run mode.
                 dstfolder.deletemessages(deletelist)
 
     def combine_flags_and_keywords(self, uid, dstfolder):
