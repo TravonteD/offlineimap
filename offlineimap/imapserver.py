@@ -116,6 +116,8 @@ class IMAPServer:
         self.availableconnections = []
         self.assignedconnections = []
         self.lastowner = {}
+        # XXX: We already apply the maxconnections option to the number of
+        # max threads in init. Why would we need this at all?
         self.semaphore = BoundedSemaphore(self.maxconnections)
         self.connectionlock = Lock()
         self.reference = repos.getreference()
@@ -616,7 +618,7 @@ class IMAPServer:
         It's OK if we have maxconnections + 1 or 2 threads, which is what this
         will help us do."""
 
-        self.semaphore.acquire()
+        self.semaphore.acquire() # Blocking until maxconnections has free slots.
         self.semaphore.release()
 
     def close(self):

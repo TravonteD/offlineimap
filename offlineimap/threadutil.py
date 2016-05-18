@@ -244,6 +244,9 @@ class InstanceLimitedThread(ExitNotifyThread):
     def start(self):
         global limitedNamespaces
 
+        # Will block until the semaphore has free slots.
+        # XXX: Might be better done at init time to avoid spawning inactive
+        # threads. This could help removing the semaphore logic in imapserver.py.
         limitedNamespaces[self.limitNamespace].acquire()
         ExitNotifyThread.start(self)
 

@@ -876,7 +876,7 @@ class BaseFolder(object):
                 thread = threadutil.InstanceLimitedThread(
                     self.getinstancelimitnamespace(),
                     target = self.copymessageto,
-                    name = "Copy message from %s:%s" % (self.repository, self),
+                    name = "Copy message from %s:%s"% (self.repository, self),
                     args = (uid, dstfolder, statusfolder)
                     )
                 thread.start()
@@ -884,7 +884,7 @@ class BaseFolder(object):
             else:
                 self.copymessageto(uid, dstfolder, statusfolder, register=0)
         for thread in threads:
-            thread.join()
+            thread.join() # Block until all "copy" threads are done.
 
         # Execute new mail hook if we have new mail.
         if self.have_newmail:
