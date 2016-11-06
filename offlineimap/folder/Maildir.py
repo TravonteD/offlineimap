@@ -59,6 +59,53 @@ def _gettimeseq(date=None):
         timelock.release()
 
 
+class MaildirNotifyNoop(object):
+    """Do nothing if notification is disabled."""
+
+    def delete(self, uid, filename, filepath):
+        pass
+
+    def new(self, uid, flags, filename):
+        pass
+
+    def rename(self, filename, newfilename, dryrun):
+        pass
+
+    def update_flags(self, uid, flags, new_flags):
+        pass
+
+
+class MaildirNotify(object):
+    """Notify about any change of the Maildir.
+
+    CAUTIONS:
+
+    1. Check if this object can be instancied more than once (because the
+    MaildirFolder is used concurrently).
+    2. We must never let errors to bubble up.
+
+    """
+    def __init__(self, root, name, sep):
+        # Initialize with whatever required arguments.
+        raise NotImplementedError
+
+    def delete(self, uid, filename, filepath):
+        # Do something.
+        raise NotImplementedError
+
+    def new(self, uid, flags, filename):
+        # Do something.
+        raise NotImplementedError
+
+    def rename(self, filename, newfilename, dryrun):
+        # Do something.
+        raise NotImplementedError
+
+    def update_flags(self, uid, flags, new_flags):
+        # Do something.
+        raise NotImplementedError
+
+
 class MaildirFolder(BaseFolder):
     def __init__(self, root, name, sep, repository):
         self.sep = sep # needs to be set before super().__init__
@@ -82,6 +129,11 @@ class MaildirFolder(BaseFolder):
             "general", "utime_from_header", False)
         self._utime_from_header = self.config.getdefaultboolean(
             self.repoconfname, "utime_from_header", utime_from_header_global)
+        # Notification.
+        if self.config.getdefaultboolean(self.repoconfname, "notification", False):
+            self._notify = MaildirNotify(root, name, sep, repository)
+        else:
+            self._notify = MaildirNotifyNoop()
 
     # Interface from BaseFolder
     def getfullname(self):
@@ -357,6 +409,8 @@ class MaildirFolder(BaseFolder):
         if uid in self.messagelist:
             # We already have it, just update flags.
             self.savemessageflags(uid, flags)
+            self._notify.update_flags(
+                    uid, self.messagelist[uid]['flags'], flags)
             return uid
 
         # Otherwise, save the message in tmp/ and then call savemessageflags()
@@ -408,7 +462,9 @@ class MaildirFolder(BaseFolder):
         self.messagelist[uid]['filename'] = tmpname
         # savemessageflags moves msg to 'cur' or 'new' as appropriate.
         self.savemessageflags(uid, flags)
-        self.ui.debug('maildir', 'savemessage: returning uid %d' % uid)
+        self.ui.debug('maildir', 'savemessage: returning uid %d'% uid)
+        # Notify on new message.
+        self._notify.new(uid, flags, self.messagelist[uid]['filename'])
         return uid
 
     # Interface from BaseFolder
@@ -506,6 +562,8 @@ class MaildirFolder(BaseFolder):
                 filename = newmsglist[uid]['filename']
                 filepath = os.path.join(self.getfullname(), filename)
                 os.unlink(filepath)
+                # Notify on deletions.
+                self._notify.delete(uid, filename, filepath)
             # Yep -- return.
         del(self.messagelist[uid])
 
@@ -533,6 +591,8 @@ class MaildirFolder(BaseFolder):
                         "FMD5=" + match.group(1), "FMD5=" + self._foldermd5)
                     try:
                         os.rename(filename, newfilename)
+                        # Notify on rename.
+                        self._notify.rename(filename, newfilename, dryrun)
                     except OSError as e:
                         six.reraise(OfflineImapError,
                                 OfflineImapError(
