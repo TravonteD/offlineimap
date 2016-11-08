@@ -241,7 +241,8 @@ class LocalStatusSQLiteFolder(BaseFolder):
     # Interface from BaseFolder
     def cachemessagelist(self):
         self.dropmessagelistcache()
-        cursor = self.connection.execute('SELECT id,flags,mtime,labels from status')
+        with self._databaseFileLock.getLock():
+            cursor = self.connection.execute('SELECT id,flags,mtime,labels from status')
         for row in cursor:
             uid = row[0]
             self.messagelist[uid] = self.msglist_item_initializer(uid)
