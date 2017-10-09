@@ -1,0 +1,28 @@
+
+# IMAP Server name: outlook.office365.com
+# Port: 993
+# Encryption protocol: SSL
+#
+# SMTP Server name: smtp.office365.com
+# Port: 587
+# Encryption protocol: TLS
+#
+# Username: offlineimap-1-office365@espacenetworks.onmicrosoft.com
+# variable: OFFICE_365_1
+#   secure:
+#   "IAr5VSsOQuA6Vo0k0hYN7y4GMbEoRYjnq0L4goHc4pKxHaIwAqZYP/5/7OemCRYeRFc8+EWYdZo5WVmoPsjMbXkgNpeN/6L2BxoBOdEtCsxLh+JhOUL5NP5U8yaK0R7o/tMlJ4EzlTsy5MF8+RFXz1v40dbEyUK3HwKRB8TjLoM="
+#
+# Username: offlineimap-2-office365@espacenetworks.onmicrosoft.com
+# variable: OFFICE_365_2
+#   secure:
+#   "VwpkQGr2Dq4Ket8WC6lEQrTgfRtgM8dXTu9Ek+4zJaZc/brPfN0Ffd2yyVACoaesTtS6xTH+QrJGJWaGOv8qpzDD/ZuCt5sh8fNaKVd2Pod9BJQdTOMxI0hcdk08mkX9H24+47aXRKVGMQWhesrORXGPA/sb/cC80fOTrQyOC5s="
+#
+# Username: offlineimap-3-office365@espacenetworks.onmicrosoft.com
+# variable: OFFICE_365_3
+#   secure:
+#   "KH0XY6nYxriNJYms0A9Jo3L7EqdzUSCR2npm1+bKojte5Tyt4hIVjLNJ8BdIzSO/N7Z1w73l2NsY0E9wGc0Db/FMGU11qEMuIycRMjOUXtHpIlnDvtiiCqV2q+juFR7KMqGL9zfQu9GeWCDslxVNo+xYwqm538UCuLKZJH38KjM="
+#
+# Username: offlineimap-4-office365@espacenetworks.onmicrosoft.com
+# variable: OFFICE_365_4
+#   secure:
+#   "ieOLK6eld8jBT39g81xgr8HeidykjEiLp7bPVgZ1VHP1vsJCqHRNR/JhLBjFuKuTJBAPqEWPbYlcoIhl2lIvVOLhog7TAb/IscT99YsfdTPPyUw1mV4CCQ82DEsv6aqGq3h400mZ1+2v+52ZzoMmHYks4Uo2q31J2kuFjcqh7+E="
